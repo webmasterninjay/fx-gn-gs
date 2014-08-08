@@ -10,12 +10,30 @@
  */
 
 /* Actions */
-
+add_action( 'wp_head', 'fxpips_add_google_news_keyword_meta' );
 add_action( 'add_meta_boxes', 'fxpips_gstandout_add_custom_box' );
 add_action( 'save_post', 'fxpips_gstandout_save_postdata' );
 add_action( 'wp_head', 'fxpips_gstandout_meta' );
 
-
+/* Google news meta generated from wordpress tags */
+function fxpips_add_google_news_keyword_meta() {
+    global $post;
+    
+    if( is_single() ) { 
+        $fxpips_post_tags = wp_get_post_tags( $post->ID );
+            // Check if post has tags
+            if ( !empty( $fxpips_post_tags ) ) {
+            
+            $fxpips_tags_list = '';
+            foreach( $fxpips_post_tags as $fxpips_post_tag ) {
+                $fxpips_tags_list .= $fxpips_post_tag->name . ', ';
+            }
+        
+            // Insert the meta tag, remove comma and space at the end
+            echo '<meta name="news_keywords" content="' . esc_attr( substr( $fxpips_tags_list, 0, -2 ) ) . '">' . "\n";
+        }
+    }
+} 
 
 /* Adds a box to the main column on the Post and Page edit screens */
 function fxpips_gstandout_add_custom_box() {
